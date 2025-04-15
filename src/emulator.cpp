@@ -17,13 +17,8 @@ Emulator::Emulator(const EmulatorConfig& config)
     std::cout << "Device Type: " << config_.deviceConfig.deviceType << std::endl;
     std::cout << "RAM: " << config_.deviceConfig.ramSizeMB << " MB" << std::endl;
 
-    securityModule_ = createSecurityModule(config_.securityConfig, device_);
-    if (securityModule_ && config_.securityConfig.type != "None") {
-        device_.setSecurityModule(securityModule_.get());
-        std::cout << "Security Module Type: " << config_.securityConfig.type << " initialized." << std::endl;
-    } else {
-        std::cout << "No security features enabled." << std::endl;
-    }
+    // Инициализация модулей безопасности
+    initSecurityModules();
 
     if (!config_.assemblyFilePath.empty()) {
         try {
@@ -43,7 +38,17 @@ Emulator::Emulator(const EmulatorConfig& config)
                 throw std::runtime_error("Assembly failed.");
             }
 
-            device_.loadProgram(program.bytecode, program.loadAddress);
+            // Применяем ASLR, если он активирован
+            uint32_t loadAddress = program.loadAddress;
+            for (auto& module : securityModules_) {
+                auto aslrModule = dynamic_cast<ASLRSecurity*>(module.get());
+                if (aslrModule) {
+                    loadAddress = aslrModule->randomizeLoadAddress(loadAddress);
+                    break;
+                }
+            }
+            
+            device_.loadProgram(program.bytecode, loadAddress);
 
         } catch (const std::exception& e) {
             std::cerr << "Error assembling or loading program: " << e.what() << std::endl;
@@ -51,6 +56,33 @@ Emulator::Emulator(const EmulatorConfig& config)
         }
     } else {
         std::cout << "No assembly file specified in config. Starting with empty memory." << std::endl;
+    }
+}
+
+void Emulator::initSecurityModules() {
+    // Проверяем основной тип безопасности
+    if (!config_.securityConfig.type.empty() && config_.securityConfig.type != "None") {
+        auto module = createSecurityModule(config_.securityConfig.type, config_.securityConfig, device_);
+        securityModules_.push_back(std::move(module));
+        device_.addSecurityModule(securityModules_.back().get());
+        std::cout << "Security Module Type: " << config_.securityConfig.type << " initialized." << std::endl;
+    }
+    
+    // Проверяем дополнительные модули безопасности в конфигурации
+    for (const auto& param : config_.securityConfig.parameters) {
+        if (param.first.rfind("module_", 0) == 0 && !param.second.empty() && param.second != "None") {
+            auto moduleType = param.second;
+            auto module = createSecurityModule(moduleType, config_.securityConfig, device_);
+            securityModules_.push_back(std::move(module));
+            device_.addSecurityModule(securityModules_.back().get());
+            std::cout << "Additional Security Module: " << moduleType << " initialized." << std::endl;
+        }
+    }
+    
+    if (securityModules_.empty()) {
+        std::cout << "No security features enabled." << std::endl;
+    } else {
+        std::cout << "Total number of active security modules: " << securityModules_.size() << std::endl;
     }
 }
 
