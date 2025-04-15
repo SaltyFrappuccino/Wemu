@@ -14,6 +14,7 @@ private:
     EmulatorConfig config_;
     Device device_;
     std::unique_ptr<class SecurityModule> securityModule_;
+    std::unique_ptr<class Assembler> assembler_;
 };
 
 #endif 

@@ -35,8 +35,8 @@ public:
     void processCycle(); 
     uint8_t readMemory(uint32_t address);
     void writeMemory(uint32_t address, uint8_t value);
-    bool isHalted() const; 
-    void loadProgram(const std::string& filePath, uint32_t loadAddress); 
+    bool isHalted() const;
+    void loadProgram(const std::vector<uint8_t>& bytecode, uint32_t loadAddress);
 
     uint32_t getRegister(uint8_t index) const;
     uint32_t getPC() const;

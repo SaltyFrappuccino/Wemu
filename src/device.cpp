@@ -88,7 +88,6 @@ void Device::fetchDecodeExecute() {
         // 2. Decode & Execute
         switch (opcode) {
             case NOP: {
-                // Ничего не делаем
                 std::cout << std::hex << "[0x" << currentPC << "] NOP" << std::dec << std::endl;
                 break;
             }
@@ -274,31 +273,23 @@ bool Device::isHalted() const {
     return cpuState_.halted;
 }
 
-void Device::loadProgram(const std::string& filePath, uint32_t loadAddress) {
-    std::ifstream file(filePath, std::ios::binary | std::ios::ate);
-    if (!file.is_open()) {
-        throw std::runtime_error("Could not open program file: " + filePath);
+void Device::loadProgram(const std::vector<uint8_t>& bytecode, uint32_t loadAddress) {
+
+    std::cout << "Loading program bytecode at address 0x" << std::hex << loadAddress << std::dec << "..." << std::endl;
+
+    size_t codeSize = bytecode.size();
+    if (loadAddress + codeSize > memory_.size()) {
+        throw std::runtime_error("Program bytecode too large for available memory.");
     }
 
-    std::cout << "Loading program from " << filePath << " at address 0x" << std::hex << loadAddress << std::dec << "..." << std::endl;
-
-    std::streamsize size = file.tellg();
-    file.seekg(0, std::ios::beg);
-
-    if (loadAddress + size > memory_.size()) {
-        throw std::runtime_error("Program too large for available memory.");
-    }
-
-    if (!file.read(reinterpret_cast<char*>(&memory_[loadAddress]), size)) {
-        throw std::runtime_error("Failed to read program file into memory.");
-    }
+    std::copy(bytecode.begin(), bytecode.end(), memory_.begin() + loadAddress);
 
     cpuState_.pc = loadAddress;
-    cpuState_.halted = false; 
-    cpuState_.zeroFlag = false; 
+    cpuState_.halted = false;
+    cpuState_.zeroFlag = false;
     cpuState_.carryFlag = false;
 
-    std::cout << "Program loaded. Size: " << size << " bytes. PC set to 0x" << std::hex << cpuState_.pc << std::dec << std::endl;
+    std::cout << "Program loaded. Size: " << codeSize << " bytes. PC set to 0x" << std::hex << cpuState_.pc << std::dec << std::endl;
 }
 
 // --- Getters for Debugging/Interaction ---

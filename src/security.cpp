@@ -68,7 +68,6 @@ std::unique_ptr<SecurityModule> createSecurityModule(const SecurityConfig& confi
     } 
     // TODO: Здесь нужно будет добавить создание других модулей безопасности (FakeDiskCheck и т.д.), когда они появятся.
     else {
-        // Возвращаем базовый модуль (или nullptr, если не нужно)
         return std::make_unique<SecurityModule>(config, device);
     }
 }

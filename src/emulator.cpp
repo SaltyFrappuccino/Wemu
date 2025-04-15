@@ -7,9 +7,12 @@
 #include "security.h" 
 #include <limits> 
 #include <vector>
+#include "assembler.h"
 
 Emulator::Emulator(const EmulatorConfig& config)
-    : config_(config), device_(config.deviceConfig) {
+    : config_(config), 
+      device_(config.deviceConfig),
+      assembler_(std::make_unique<Assembler>()) {
     std::cout << "Initializing Wemu Emulator..." << std::endl;
     std::cout << "Device Type: " << config_.deviceConfig.deviceType << std::endl;
     std::cout << "RAM: " << config_.deviceConfig.ramSizeMB << " MB" << std::endl;
@@ -22,26 +25,32 @@ Emulator::Emulator(const EmulatorConfig& config)
         std::cout << "No security features enabled." << std::endl;
     }
 
-    if (!config_.programFilePath.empty()) {
+    if (!config_.assemblyFilePath.empty()) {
         try {
-            std::filesystem::path programPath = config_.programFilePath;
-            std::string finalProgramPath;
+            std::filesystem::path asmPath = config_.assemblyFilePath;
+            std::string finalAsmPath;
 
-            if (programPath.is_relative()) {
-                finalProgramPath = (std::filesystem::path(config_.configFileDir) / programPath).string();
-                std::cout << "Program path is relative. Resolved path: " << finalProgramPath << std::endl;
+            if (asmPath.is_relative()) {
+                finalAsmPath = (std::filesystem::path(config_.configFileDir) / asmPath).string();
+                std::cout << "Assembly file path is relative. Resolved path: " << finalAsmPath << std::endl;
             } else {
-                finalProgramPath = config_.programFilePath;
-                 std::cout << "Program path is absolute: " << finalProgramPath << std::endl;
+                finalAsmPath = config_.assemblyFilePath;
+                 std::cout << "Assembly file path is absolute: " << finalAsmPath << std::endl;
             }
 
-            device_.loadProgram(finalProgramPath, config_.programLoadAddress);
+            AssembledProgram program = assembler_->assemble(finalAsmPath);
+            if (!program.success) {
+                throw std::runtime_error("Assembly failed.");
+            }
+
+            device_.loadProgram(program.bytecode, program.loadAddress);
+
         } catch (const std::exception& e) {
-            std::cerr << "Error loading program: " << e.what() << std::endl;
+            std::cerr << "Error assembling or loading program: " << e.what() << std::endl;
             throw;
         }
     } else {
-        std::cout << "No program file specified in config. Starting with empty memory." << std::endl;
+        std::cout << "No assembly file specified in config. Starting with empty memory." << std::endl;
     }
 }
 

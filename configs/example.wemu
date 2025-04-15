@@ -1,8 +1,7 @@
 device.type = SimpleTestCPU
 device.ramMB = 1
 
-program.file = example_program.bin
-program.load_address = 0x100
+program.assembly_file = example.asm
 
 security.type = BufferOverflow
 security.buffer_address = 0x300

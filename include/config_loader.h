@@ -71,8 +71,7 @@ struct SecurityConfig {
 struct EmulatorConfig {
     DeviceConfig deviceConfig;
     SecurityConfig securityConfig;
-    std::string programFilePath; 
-    uint32_t programLoadAddress = 0x0000; 
+    std::string assemblyFilePath;
     std::string configFileDir;
 };
 

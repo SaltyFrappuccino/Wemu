@@ -80,8 +80,8 @@ EmulatorConfig ConfigLoader::parseConfig(const std::string& configData) {
             }
         } else if (key == "security.type") {
             config.securityConfig.type = value;
-        } else if (key == "program.file") {
-            config.programFilePath = value;
+        } else if (key == "program.assembly_file") {
+            config.assemblyFilePath = value;
         } else if (key == "program.load_address") {
             try {
                 if (value.size() > 2 && value.substr(0, 2) == "0x") {
