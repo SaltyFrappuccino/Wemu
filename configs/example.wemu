@@ -1,0 +1,11 @@
+device.type = SimpleTestCPU
+device.ramMB = 1
+
+program.file = example_program.bin
+program.load_address = 0x100
+
+security.type = BufferOverflow
+security.buffer_address = 0x300
+security.buffer_size = 16
+security.allow_overflow = true
+# security.allow_overflow = false 
