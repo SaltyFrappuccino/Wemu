@@ -1,0 +1,10 @@
+device.type = SimpleTestCPU
+device.ramMB = 1
+
+program.assembly_file = aslr.asm
+
+security.type = ASLR
+security.min_offset = 0x1000
+security.max_offset = 0x8000
+security.alignment = 0x10
+security.enabled = true 
