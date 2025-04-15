@@ -17,7 +17,6 @@ Emulator::Emulator(const EmulatorConfig& config)
     std::cout << "Device Type: " << config_.deviceConfig.deviceType << std::endl;
     std::cout << "RAM: " << config_.deviceConfig.ramSizeMB << " MB" << std::endl;
 
-    // Инициализация модулей безопасности
     initSecurityModules();
 
     if (!config_.assemblyFilePath.empty()) {
@@ -38,7 +37,6 @@ Emulator::Emulator(const EmulatorConfig& config)
                 throw std::runtime_error("Assembly failed.");
             }
 
-            // Применяем ASLR, если он активирован
             uint32_t loadAddress = program.loadAddress;
             for (auto& module : securityModules_) {
                 auto aslrModule = dynamic_cast<ASLRSecurity*>(module.get());
@@ -60,7 +58,6 @@ Emulator::Emulator(const EmulatorConfig& config)
 }
 
 void Emulator::initSecurityModules() {
-    // Проверяем основной тип безопасности
     if (!config_.securityConfig.type.empty() && config_.securityConfig.type != "None") {
         auto module = createSecurityModule(config_.securityConfig.type, config_.securityConfig, device_);
         securityModules_.push_back(std::move(module));
@@ -68,7 +65,6 @@ void Emulator::initSecurityModules() {
         std::cout << "Security Module Type: " << config_.securityConfig.type << " initialized." << std::endl;
     }
     
-    // Проверяем дополнительные модули безопасности в конфигурации
     for (const auto& param : config_.securityConfig.parameters) {
         if (param.first.rfind("module_", 0) == 0 && !param.second.empty() && param.second != "None") {
             auto moduleType = param.second;

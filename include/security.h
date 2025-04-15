@@ -8,7 +8,6 @@
 #include <random>
 #include <ctime>
 
-// Предварительное объявление класса
 class Device;
 
 class SecurityModule {
@@ -26,7 +25,6 @@ protected:
     Device& device_;
 };
 
-// Модуль для защиты от переполнения буфера
 class BufferOverflowSecurity : public SecurityModule {
 public:
     BufferOverflowSecurity(const SecurityConfig& config, Device& device);
@@ -39,7 +37,6 @@ private:
     bool allowOverflow_;
 };
 
-// Модуль для защиты стека с помощью канареек
 class StackCanarySecurity : public SecurityModule {
 public:
     StackCanarySecurity(const SecurityConfig& config, Device& device);
@@ -56,7 +53,6 @@ private:
     bool isInitialized_;
 };
 
-// Модуль для проверки подлинности "диска"
 class FakeDiskCheckSecurity : public SecurityModule {
 public:
     FakeDiskCheckSecurity(const SecurityConfig& config, Device& device);
@@ -71,7 +67,6 @@ private:
     bool allowUnauthorized_;
 };
 
-// Модуль для рандомизации адресного пространства программы (ASLR)
 class ASLRSecurity : public SecurityModule {
 public:
     ASLRSecurity(const SecurityConfig& config, Device& device);
@@ -88,7 +83,6 @@ private:
     bool enabled_;
 };
 
-// Модуль для моделирования атак по времени
 class TimeAttackSecurity : public SecurityModule {
 public:
     TimeAttackSecurity(const SecurityConfig& config, Device& device);

@@ -6,7 +6,6 @@
 #include <cstdint>
 #include <array>
 
-// Предварительное объявление класса
 class SecurityModule;
 
 enum Opcode : uint8_t {
@@ -17,30 +16,28 @@ enum Opcode : uint8_t {
     ADD      = 0x10, 
     SUB      = 0x11, 
     CMP_REG  = 0x12, 
-    // Логические операции
     AND      = 0x13,
     OR       = 0x14,
     XOR      = 0x15,
     NOT      = 0x16,
-    // Битовые операции
-    SHL      = 0x17, // Сдвиг влево
-    SHR      = 0x18, // Логический сдвиг вправо
-    SAR      = 0x19, // Арифметический сдвиг вправо
-    // Операции со стеком
+    SHL      = 0x17, 
+    SHR      = 0x18, 
+    SAR      = 0x19, 
+
     PUSH     = 0x30,
     POP      = 0x31,
-    // Вызовы функций
+
     CALL     = 0x32,
     RET      = 0x33,
-    // Переходы
+
     JMP      = 0x20, 
     JE       = 0x21, 
     JNE      = 0x22,
-    JG       = 0x23, // Переход если больше (not CF and not ZF)
-    JL       = 0x24, // Переход если меньше (CF)
-    JGE      = 0x25, // Переход если больше или равно (not CF)
-    JLE      = 0x26, // Переход если меньше или равно (CF or ZF)
-    // Прочие
+    JG       = 0x23, 
+    JL       = 0x24, 
+    JGE      = 0x25, 
+    JLE      = 0x26, 
+
     HALT     = 0xFF  
 };  
 
@@ -50,9 +47,9 @@ struct CpuState {
     bool halted = false; 
     bool zeroFlag = false;
     bool carryFlag = false;
-    uint32_t sp = 0; // Stack Pointer - указатель стека
-    uint32_t stackBase = 0; // Базовый адрес стека
-    uint32_t stackSize = 0; // Размер стека
+    uint32_t sp = 0; 
+    uint32_t stackBase = 0; 
+    uint32_t stackSize = 0; 
 };
 
 class Device {
@@ -64,7 +61,6 @@ public:
     bool isHalted() const;
     void loadProgram(const std::vector<uint8_t>& bytecode, uint32_t loadAddress);
 
-    // Методы для работы со стеком
     void initStack(uint32_t stackBase, uint32_t stackSize);
     void pushToStack(uint32_t value);
     uint32_t popFromStack();
@@ -90,7 +86,6 @@ private:
     DeviceConfig config_;
     std::vector<uint8_t> memory_;
     CpuState cpuState_;
-    // Поддержка нескольких модулей безопасности
     std::vector<SecurityModule*> securityModules_;
 };
 
