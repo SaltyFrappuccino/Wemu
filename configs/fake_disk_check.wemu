@@ -1,0 +1,9 @@
+device.type = SimpleTestCPU
+device.ramMB = 1
+
+program.assembly_file = fake_disk_check.asm
+
+security.type = FakeDiskCheck
+security.expected_disk_id = ORIGINAL_DISK
+security.disk_signature = VALID_SIGNATURE
+security.allow_unauthorized = false 
