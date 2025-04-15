@@ -2,8 +2,11 @@
 #define SECURITY_H
 
 #include "config_loader.h"
-#include "device.h"
+// #include "device.h"
 #include <memory>
+
+// Предварительное объявление класса
+class Device;
 
 class SecurityModule {
 public:
@@ -29,5 +32,9 @@ private:
     size_t bufferSize_;
     bool allowOverflow_;
 };
+
+// Можно добавить другие классы для FakeDiskCheck и т.д.
+
+std::unique_ptr<SecurityModule> createSecurityModule(const SecurityConfig& config, Device& device);
 
 #endif

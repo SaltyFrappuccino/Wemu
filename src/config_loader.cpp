@@ -82,18 +82,6 @@ EmulatorConfig ConfigLoader::parseConfig(const std::string& configData) {
             config.securityConfig.type = value;
         } else if (key == "program.assembly_file") {
             config.assemblyFilePath = value;
-        } else if (key == "program.load_address") {
-            try {
-                if (value.size() > 2 && value.substr(0, 2) == "0x") {
-                    config.programLoadAddress = std::stoul(value.substr(2), nullptr, 16);
-                } else {
-                    config.programLoadAddress = std::stoul(value);
-                }
-             } catch (const std::invalid_argument& /*e*/) {
-                 std::cerr << "Warning: Invalid value for program.load_address: " << value << std::endl;
-            } catch (const std::out_of_range& /*e*/) {
-                 std::cerr << "Warning: Value out of range for program.load_address: " << value << std::endl;
-            }
         } else {
             if (key.rfind("device.", 0) == 0) {
                  config.deviceConfig.parameters[key.substr(7)] = value;

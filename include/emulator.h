@@ -3,6 +3,8 @@
 
 #include "config_loader.h"
 #include "device.h"
+#include "assembler.h"
+#include "security.h"
 #include <memory>
 
 class Emulator {

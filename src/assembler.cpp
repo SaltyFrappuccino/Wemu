@@ -147,7 +147,7 @@ Assembler::ParsedLine Assembler::parseLine(const std::string& line, int lineNumb
         rest = trim(trimmedLine.substr(firstSpace + 1));
     }
 
-    if (firstPart.back() == ':') {
+    if (!firstPart.empty() && firstPart.back() == ':') {
         result.label = firstPart.substr(0, firstPart.length() - 1);
         if (rest.empty()) return result; 
         

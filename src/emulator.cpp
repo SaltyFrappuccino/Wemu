@@ -19,7 +19,7 @@ Emulator::Emulator(const EmulatorConfig& config)
 
     securityModule_ = createSecurityModule(config_.securityConfig, device_);
     if (securityModule_ && config_.securityConfig.type != "None") {
-        device_.securityModule_ = securityModule_.get();
+        device_.setSecurityModule(securityModule_.get());
         std::cout << "Security Module Type: " << config_.securityConfig.type << " initialized." << std::endl;
     } else {
         std::cout << "No security features enabled." << std::endl;
@@ -118,10 +118,10 @@ void Emulator::run() {
                     count = std::stoul(countStr);
                 }
                 if (count == 0) count = 1;
-                if (count > 64) count = 64; 
+                if (count > 64) count = 64;
 
                  std::cout << "Reading " << count << " byte(s) from 0x" << std::hex << address << ":" << std::endl;
-                for (uint32_t i = 0; i < count; ++i) {
+                for (size_t i = 0; i < count; ++i) {
                     uint8_t val = device_.readMemory(address + i);
                     if (i % 16 == 0 && i != 0) std::cout << std::endl;
                      std::cout << " " << std::setw(2) << std::setfill('0') << std::hex << static_cast<int>(val);

@@ -1,4 +1,5 @@
 #include "device.h"
+#include "security.h"
 #include <stdexcept>
 #include <iostream>
 #include <iomanip> 
@@ -229,7 +230,7 @@ void Device::fetchDecodeExecute() {
 
     } catch (const std::runtime_error& e) {
          std::cerr << std::hex << "[0x" << currentPC << "] Runtime Error: " << e.what() << std::dec << std::endl;
-         cpuState_.halted = true; /
+         cpuState_.halted = true;
     }
 }
 
@@ -267,6 +268,10 @@ void Device::writeMemory(uint32_t address, uint8_t value) {
         securityModule_->checkWriteAccess(address, 1);
     }
     memory_[address] = value;
+}
+
+void Device::setSecurityModule(SecurityModule* module) {
+    securityModule_ = module;
 }
 
 bool Device::isHalted() const {

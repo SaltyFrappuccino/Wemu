@@ -6,6 +6,9 @@
 #include <cstdint>
 #include <array>
 
+// Предварительное объявление класса
+class SecurityModule;
+
 enum Opcode : uint8_t {
     NOP      = 0x00,
     LOAD_IMM = 0x01, 
@@ -43,6 +46,8 @@ public:
     bool getZeroFlag() const;
     bool getCarryFlag() const;
     const std::array<uint32_t, 8>& getRegisters() const;
+
+    void setSecurityModule(SecurityModule* module);
 
 private:
     friend class SecurityModule;

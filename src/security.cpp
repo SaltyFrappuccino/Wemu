@@ -40,12 +40,12 @@ BufferOverflowSecurity::BufferOverflowSecurity(const SecurityConfig& config, Dev
 }
 
 bool BufferOverflowSecurity::checkWriteAccess(uint32_t address, size_t size) {
-    if (bufferSize_ == 0) return true; 
+    if (bufferSize_ == 0) return true;
 
     uint32_t writeStart = address;
-    uint32_t writeEnd = address + size; 
+    uint64_t writeEnd = static_cast<uint64_t>(address) + size;
     uint32_t bufferStart = bufferAddress_;
-    uint32_t bufferEnd = bufferAddress_ + bufferSize_; 
+    uint64_t bufferEnd = static_cast<uint64_t>(bufferAddress_) + bufferSize_;
 
     bool overflows = (writeEnd > bufferEnd);
 
