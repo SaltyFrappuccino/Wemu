@@ -1,0 +1,8 @@
+device.type = SimpleTestCPU
+device.ramMB = 1
+
+program.assembly_file = stack_canary.asm
+
+security.type = StackCanary
+security.canary_address = 0x400
+security.canary_value = 0xDEADBEEF 
