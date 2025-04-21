@@ -1,0 +1,19 @@
+device.type = SimpleTestCPU
+device.ramMB = 1
+
+program.assembly_file = multi_security.asm
+
+security.type = BufferOverflow
+security.buffer_address = 0x300
+security.buffer_size = 16
+security.allow_overflow = true
+
+security.module_1 = StackCanary
+security.canary_address = 0x400
+security.canary_value = 0xDEADBEEF
+
+security.module_2 = ASLR
+security.min_offset = 0x1000
+security.max_offset = 0x8000
+security.alignment = 0x10
+security.enabled = true 

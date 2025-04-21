@@ -1,0 +1,8 @@
+device.type = SimpleTestCPU
+device.ramMB = 1
+
+program.assembly_file = time_attack.asm
+
+security.type = TimeAttack
+security.correct_password = SECRET_PWD
+security.vulnerable_check = true 
